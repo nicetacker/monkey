@@ -157,3 +157,30 @@ func (i *IntegralLiteral) TokenLiteral() string { return i.Token.Literal }
 func (i *IntegralLiteral) String() string {
 	return i.Token.Literal
 }
+
+// PrefixExpression represents prefix operator.
+//  Token    : Token of prefix operator (ex: !(bang), -(minus))
+//  Operator : Operator
+//  Right    : Expression to be evaluated with operator
+type PrefixExpression struct {
+	Token    token.Token
+	Operator string
+	Right    Expression
+}
+
+// PrefixExpression is Expression
+func (pe *PrefixExpression) expressionNode() {}
+
+// TokenLiteral returns string literal of operator token
+func (pe *PrefixExpression) TokenLiteral() string { return pe.Token.Literal }
+
+// String of prefix expression (for debug)
+func (pe *PrefixExpression) String() string {
+	var out bytes.Buffer
+	out.WriteString("(")
+	out.WriteString(pe.Operator)
+	out.WriteString(pe.Right.String())
+	out.WriteString(")")
+
+	return out.String()
+}
