@@ -29,11 +29,13 @@ type Expression interface {
 // AST nodes
 
 // Program represents program
+// which contains some statements
 type Program struct {
 	Statements []Statement
 }
 
 // TokenLiteral for Program
+// Return: First TokenLiteral() of statements
 func (p *Program) TokenLiteral() string {
 	if len(p.Statements) > 0 {
 		return p.Statements[0].TokenLiteral()
@@ -41,6 +43,7 @@ func (p *Program) TokenLiteral() string {
 	return ""
 }
 
+// String returns all string of statements in program
 func (p *Program) String() string {
 	var out bytes.Buffer
 	for _, s := range p.Statements {
@@ -49,13 +52,11 @@ func (p *Program) String() string {
 	return out.String()
 }
 
-// ExpressionStatement represents expression in program
+// ExpressionStatement represents Expression in program
 type ExpressionStatement struct {
 	Token      token.Token
 	Expression Expression
 }
-
-func (es *ExpressionStatement) statementNode() {}
 
 // TokenLiteral for expression statement.
 func (es *ExpressionStatement) TokenLiteral() string { return es.Token.Literal }
@@ -68,7 +69,13 @@ func (es ExpressionStatement) String() string {
 	return ""
 }
 
-// LetStatement is let
+// ExpressionStatement is Statement
+func (es *ExpressionStatement) statementNode() {}
+
+// LetStatement represents let. (binding name)
+//  Token  should be "let"
+//  Name   should be name of binded value
+//  Value  shoule be binded value
 type LetStatement struct {
 	Token token.Token
 	Name  *Identifier
@@ -77,8 +84,6 @@ type LetStatement struct {
 
 // TokenLiteral for let statement.
 func (ls *LetStatement) TokenLiteral() string { return ls.Token.Literal }
-
-func (ls *LetStatement) statementNode() {}
 
 // String let statement
 func (ls *LetStatement) String() string {
@@ -94,7 +99,10 @@ func (ls *LetStatement) String() string {
 	return out.String()
 }
 
-// ReturnStatement is return
+// LetStatement is Statement
+func (ls *LetStatement) statementNode() {}
+
+// ReturnStatement represents return
 type ReturnStatement struct {
 	Token       token.Token
 	ReturnValue Expression
@@ -126,12 +134,13 @@ type Identifier struct {
 // TokenLiteral for identifier statement.
 func (i *Identifier) TokenLiteral() string { return i.Token.Literal }
 
-func (i *Identifier) expressionNode() {}
-
 // String stringify Identifier
 func (i *Identifier) String() string {
 	return i.Value
 }
+
+// Identifier is Expression
+func (i *Identifier) expressionNode() {}
 
 // IntegralLiteral represents int literal
 type IntegralLiteral struct {
